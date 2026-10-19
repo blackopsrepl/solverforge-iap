@@ -42,7 +42,8 @@ def api(base, path, method="GET", body=None, timeout=30):
         data = json.dumps(body).encode()
         req.add_header("content-type", "application/json")
     with urllib.request.urlopen(req, data=data, timeout=timeout) as resp:
-        return json.loads(resp.read().decode())
+        body = resp.read()
+        return json.loads(body) if body.strip() else None
 
 
 def assert_port_free(port):
@@ -84,7 +85,7 @@ def solve_job(base, plan, hard_timeout):
             terminal = state
             break
         time.sleep(1.0)
-    snap = api(base, f"/jobs/{job_id}")  # full snapshot with solution
+    snap = api(base, f"/jobs/{job_id}/snapshot")  # full snapshot with solution
     try:
         analysis = api(base, f"/jobs/{job_id}/analysis")
     except Exception:
@@ -154,6 +155,11 @@ def main():
                     except urllib.error.HTTPError:
                         pass
             finally:
+                server.terminate()
+                try:
+                    server.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    server.kill()
                 if failures:
                     print(
                         f"[{variant}] failures: "

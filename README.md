@@ -165,9 +165,16 @@ First-feasible times are not recorded in the sweep artifacts.
 make serve                                   # workbench on http://127.0.0.1:7860
 IAP_VARIANT=cr PORT=7861 make serve          # contact-reduction variant
 make solve INSTANCE=Input_UG1 SECONDS=60     # one instance from the CLI
-make sweep                                   # all 17 instances through the API
+make sweep                                   # both variants, 60 seconds per job
+make sweep SECONDS=600                       # both variants, 600 seconds per job
 make check                                   # fmt + clippy + tests + model check
 ```
+
+Sweep output is separated by budget (`results/60s/`, `results/600s/`).
+Preview the configuration without starting any jobs with
+`make sweep SECONDS=600 SWEEP_FLAGS=--dry-run`.
+The 600-second sweep runs each instance once per variant; the paper's main
+comparison uses five independent repetitions per instance and variant.
 
 In the UI: pick an instance, set the per-job duration (1–3600 s), Solve.
 Pause/Resume/Stop and score analysis (“Analyze score”) work mid- and

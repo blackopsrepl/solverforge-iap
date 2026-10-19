@@ -21,6 +21,9 @@ PROGRESS := →
 VERSION := $(shell grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
 RUST_VERSION := 1.95+
 NAME := solverforge-iap
+SECONDS ?= 60
+SWEEP_INSTANCES ?=
+SWEEP_FLAGS ?=
 
 # ============== Phony Targets ==============
 .PHONY: banner help build build-release serve solve test lint fmt fmt-check clippy check \
@@ -104,8 +107,8 @@ check: banner fmt-check clippy test
 
 sweep: banner
 	@$(call box,Instance Sweep)
-	@printf "$(ARROW) $(BOLD)Sweeping all 17 instances ($(GRAY)IAP_VARIANT=$${IAP_VARIANT:-cm}$(RESET)$(BOLD))...$(RESET)\n"
-	@python3 scripts/sweep.py
+	@printf "$(ARROW) $(BOLD)Sweeping CM and CR at $(SECONDS)s per job...$(RESET)\n"
+	@python3 scripts/sweep.py --seconds "$(SECONDS)" $(SWEEP_FLAGS) $(SWEEP_INSTANCES)
 
 bench: banner
 	@$(call box,Native Benchmark)
@@ -173,7 +176,7 @@ help: banner
 	@/bin/echo -e ""
 	@/bin/echo -e "$(CYAN)$(BOLD)Run:$(RESET)"
 	@/bin/echo -e "  $(GREEN)make serve$(RESET)          - Serve the workbench ($(GRAY)PORT, IAP_VARIANT from the environment$(RESET))"
-	@/bin/echo -e "  $(GREEN)make sweep$(RESET)          - Solve all 17 instances through the API"
+	@/bin/echo -e "  $(GREEN)make sweep$(RESET)          - Both variants; SECONDS=600 for the paper per-run budget"
 	@/bin/echo -e "  $(GREEN)make bench$(RESET)          - Build the native benchmark example"
 	@/bin/echo -e ""
 	@/bin/echo -e "$(CYAN)$(BOLD)Test & Lint:$(RESET)"

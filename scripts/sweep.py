@@ -3,6 +3,7 @@
 POST the plan to the app's /jobs, poll to a terminal lifecycle state, and
 persist the snapshot + per-constraint analysis to results/.
 """
+import argparse
 import json
 import os
 import subprocess
@@ -47,15 +48,22 @@ def api(base, path, method="GET", body=None, timeout=30):
 
 
 def assert_port_free(port):
+    """A listener must actually answer, not merely leave TIME_WAIT remnants.
+
+    The sweep server binds with SO_REUSEADDR (tokio default), so only a live
+    listener is a real collision."""
     import socket
 
     probe = socket.socket()
+    probe.settimeout(1.0)
     try:
-        probe.bind(("127.0.0.1", port))
-    except OSError as e:
+        probe.connect(("127.0.0.1", port))
+    except OSError:
+        return
+    else:
         raise SystemExit(
-            f"port {port} is already in use ({e}); kill stale solverforge_iap"
-            " processes or pick another sweep server pair"
+            f"port {port} already has a live listener; kill stale"
+            " solverforge_iap processes or pick another sweep server pair"
         )
     finally:
         probe.close()
@@ -93,15 +101,51 @@ def solve_job(base, plan, hard_timeout):
     return job_id, terminal, snap, analysis
 
 
+def positive_seconds(value):
+    seconds = int(value)
+    if not 1 <= seconds <= 3600:
+        raise argparse.ArgumentTypeError("seconds must be between 1 and 3600")
+    return seconds
+
+
 def main():
-    os.makedirs(RESULTS, exist_ok=True)
-    only = sys.argv[1:] or INSTANCES
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("instances", nargs="*", help="instance IDs; default: all 17")
+    parser.add_argument(
+        "--seconds",
+        type=positive_seconds,
+        default=60,
+        help="solve budget per job (default: 60)",
+    )
+    parser.add_argument(
+        "--output", help="output directory (default: results/<seconds>s)"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="print the run configuration without starting servers or jobs",
+    )
+    args = parser.parse_args()
+    only = args.instances or INSTANCES
+    unknown = sorted(set(only) - set(INSTANCES))
+    if unknown:
+        parser.error("unknown instances: " + ", ".join(unknown))
+    output = args.output or os.path.join(RESULTS, f"{args.seconds}s")
+    hard_timeout = args.seconds + 120
+    print(
+        f"{len(only)} instances × 2 variants; {args.seconds}s per job; "
+        f"{hard_timeout}s timeout; output: {output}",
+        flush=True,
+    )
+    if args.dry_run:
+        return
+    os.makedirs(output, exist_ok=True)
     for variant in ("cm", "cr"):
         port = 7860 if variant == "cm" else 7861
         assert_port_free(port)
         base = f"http://127.0.0.1:{port}"
         env = dict(os.environ, IAP_VARIANT=variant, PORT=str(port))
-        log_path = os.path.join(RESULTS, f"server-{variant}.log")
+        log_path = os.path.join(output, f"server-{variant}.log")
         with open(log_path, "w") as log:
             server = subprocess.Popen(
                 [os.path.join(APP, "target", "release", "solverforge_iap")],
@@ -119,8 +163,9 @@ def main():
                 for inst in only:
                     try:
                         plan = api(base, f"/instances/{inst}")
+                        plan["duration_seconds"] = args.seconds
                         job_id, terminal, snap, analysis = solve_job(
-                            base, plan, hard_timeout=180
+                            base, plan, hard_timeout=hard_timeout
                         )
                     except urllib.error.HTTPError as e:
                         e.read()
@@ -138,9 +183,7 @@ def main():
                         "snapshot": snap,
                         "analysis": analysis,
                     }
-                    with open(
-                        os.path.join(RESULTS, f"{variant}-{inst}.json"), "w"
-                    ) as f:
+                    with open(os.path.join(output, f"{variant}-{inst}.json"), "w") as f:
                         json.dump(out, f)
                     best = snap.get("bestScore")
                     cur = snap.get("currentScore")

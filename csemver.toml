@@ -1,0 +1,42 @@
+# csemver contract for solverforge-iap.
+# Version surfaces: the package manifest and its Cargo.lock record.
+# Docs carry no prose version line, so only the two manifest surfaces bump.
+
+tagPrefix = "v"
+releaseCommitMessageFormat = "chore(release): {{currentTag}}"
+commitUrlFormat = "https://github.com/blackopsrepl/solverforge-iap/commit/{{hash}}"
+compareUrlFormat = "https://github.com/blackopsrepl/solverforge-iap/compare/{{previousTag}}...{{currentTag}}"
+issueUrlFormat = "https://github.com/blackopsrepl/solverforge-iap/issues/{{id}}"
+
+packageFiles = [
+  { filename = "Cargo.toml", type = "regex", pattern = '^version = "([0-9]+\.[0-9]+\.[0-9]+)"', versionGroup = 1 },
+]
+
+[[bumpFiles]]
+filename = "Cargo.toml"
+type = "regex"
+pattern = '^version = "([0-9]+\.[0-9]+\.[0-9]+)"'
+versionGroup = 1
+
+# Anchor on the unique name/version pair of THIS crate, not a generic version
+# line: every dependency in the lockfile has one.
+[[bumpFiles]]
+filename = "Cargo.lock"
+type = "regex"
+pattern = '''^\[\[package\]\]
+name = "solverforge-iap"
+version = "([0-9]+\.[0-9]+\.[0-9]+)"'''
+versionGroup = 1
+
+types = [
+  { type = "feat", section = "Features" },
+  { type = "fix", section = "Bug Fixes" },
+  { type = "perf", section = "Performance" },
+  { type = "docs", section = "Documentation" },
+  { type = "chore", effect = "hidden" },
+  { type = "style", effect = "hidden" },
+  { type = "refactor", effect = "hidden" },
+  { type = "test", effect = "hidden" },
+  { type = "build", effect = "hidden" },
+  { type = "ci", effect = "hidden" },
+]

@@ -7,7 +7,7 @@ repos:
     -   id: trailing-whitespace
     -   id: check-merge-conflict
     -   id: check-added-large-files
-        exclude: '^src/data/instances/.*\.json$'
+        exclude: '^(src/data/instances/.*\.json|docs/assets/mascot-.*\.png)$'
 
 -   repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.0

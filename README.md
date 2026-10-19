@@ -98,17 +98,66 @@ never compared.
 
 ## Results
 
-Single runs at the default 60-second budget (seed 1, CM variant), verified
-against the hard rules independently of the incremental score:
+Full console sweep: one 60-second run per instance and variant, seed 1,
+covering all 17 instances × both objectives (34 completed runs).
+These are single-run results, not averages or best-of-many trials.
+The [recorded results](docs/benchmarks/full-sweep.json) retain every score,
+elapsed time, and source-artifact checksum.
 
-| instance | known optimum | this solver @ 60 s | gap | first feasible |
-|---|---|---|---|---|
-| UG1 | 78 | 78 | 0.00 % | 32 s |
-| UG3 | 1097 | 1093 | 0.36 % | 4 s |
-| UG5 | 1494 | 1489 | 0.33 % | 1.5 s |
+### IAP-CM — maximize interdepartmental contacts
 
-Full sweeps across all 17 instances exist as a script (`scripts/sweep.py`)
-rather than CI runs.
+All 17 runs finished with a zero hard score; four reached the known optimum.
+The gap is `(optimum − contacts) / optimum × 100` and is reported only for
+hard-feasible results. Reference provenance is described above.
+
+| Instance | Known optimum | Contacts @ 60 s | Gap | Hard score |
+|---|---:|---:|---:|---:|
+| UG1 | 78 | 78 | 0.00% | 0 |
+| UG2 | 1507 | 1482 | 1.66% | 0 |
+| UG3 | 1097 | 1093 | 0.36% | 0 |
+| UG4 | 704 | 704 | 0.00% | 0 |
+| UG5 | 1494 | 1489 | 0.33% | 0 |
+| ITC1 | 2457 | 2447 | 0.41% | 0 |
+| ITC2 | 4137 | 4095 | 1.02% | 0 |
+| ITC3 | 4558 | 4477 | 1.78% | 0 |
+| ITC4 | 1325 | 1322 | 0.23% | 0 |
+| ITC5 | 4871 | 4799 | 1.48% | 0 |
+| ITC6 | 1912 | 1903 | 0.47% | 0 |
+| ITC7 | 8175 | 7855 | 3.91% | 0 |
+| ITC8 | 4262 | 4232 | 0.70% | 0 |
+| ITC9 | 1133 | 1133 | 0.00% | 0 |
+| ITC10 | 1524 | 1523 | 0.07% | 0 |
+| ITC11 | 11079 | 10815 | 2.38% | 0 |
+| ITC12 | 779 | 779 | 0.00% | 0 |
+
+### IAP-CR — minimize all contacts
+
+Twelve runs finished with a zero hard score. Five did not reach feasibility
+within the 60-second budget; their contact counts describe infeasible
+assignments, **not valid feasible solutions**. No CR optimum references are
+provided, so no CR gaps are claimed.
+
+| Instance | Contacts @ 60 s | Hard score | Feasible within budget |
+|---|---:|---:|---|
+| UG1 | 68 | 0 | Yes |
+| UG2 | 1183 | -3 | **No** |
+| UG3 | 722 | 0 | Yes |
+| UG4 | 411 | -1 | **No** |
+| UG5 | 881 | 0 | Yes |
+| ITC1 | 1739 | 0 | Yes |
+| ITC2 | 3164 | 0 | Yes |
+| ITC3 | 3913 | 0 | Yes |
+| ITC4 | 987 | 0 | Yes |
+| ITC5 | 3702 | -1 | **No** |
+| ITC6 | 1416 | 0 | Yes |
+| ITC7 | 6097 | -13 | **No** |
+| ITC8 | 3143 | 0 | Yes |
+| ITC9 | 896 | 0 | Yes |
+| ITC10 | 1035 | 0 | Yes |
+| ITC11 | 7458 | -7 | **No** |
+| ITC12 | 751 | 0 | Yes |
+
+First-feasible times are not recorded in the sweep artifacts.
 
 ## Run it
 

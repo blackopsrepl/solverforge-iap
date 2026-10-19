@@ -1,0 +1,349 @@
+{
+  "protocol": {
+    "runs_per_instance_variant": 1,
+    "budget_seconds": 60,
+    "random_seed": 1
+  },
+  "results": [
+    {
+      "instance": "Input_UG1",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60000,
+      "score": "0hard/78soft",
+      "hard": 0,
+      "contacts": 78,
+      "source_sha256": "fa54bd4e009ff28178148c3e0d744b324f7c923d30da6ffd4c6e67675a2e34e4"
+    },
+    {
+      "instance": "Input_UG1",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60000,
+      "score": "0hard/-68soft",
+      "hard": 0,
+      "contacts": 68,
+      "source_sha256": "5c744772c4af7d2f4ef4939cf68a2b8f67fbaf07cae83cbbb4c6055480829e7a"
+    },
+    {
+      "instance": "Input_UG2",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60002,
+      "score": "0hard/1482soft",
+      "hard": 0,
+      "contacts": 1482,
+      "source_sha256": "0cc6840d5f98fb2808640a00c66081671c81b38cc42efde81c9894d62fe53d10"
+    },
+    {
+      "instance": "Input_UG2",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60001,
+      "score": "-3hard/-1183soft",
+      "hard": -3,
+      "contacts": 1183,
+      "source_sha256": "c45e7c646597cadee3aa7b0b515b753770dca0d4197af9010c60e24978a2833d"
+    },
+    {
+      "instance": "Input_UG3",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60001,
+      "score": "0hard/1093soft",
+      "hard": 0,
+      "contacts": 1093,
+      "source_sha256": "afce95065e7d9b56a6ab0ffed45311f35c640f5c9ad96bb36d7dbe9b9ac61730"
+    },
+    {
+      "instance": "Input_UG3",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60000,
+      "score": "0hard/-722soft",
+      "hard": 0,
+      "contacts": 722,
+      "source_sha256": "2b3fbcd37721c55b4d01e6335274c321c3042171467265901c3633b5bdf7fd0e"
+    },
+    {
+      "instance": "Input_UG4",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60001,
+      "score": "0hard/704soft",
+      "hard": 0,
+      "contacts": 704,
+      "source_sha256": "7ee584b5f28349b56f6d654e180cd525a2accfb951434250371195a511645e93"
+    },
+    {
+      "instance": "Input_UG4",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60002,
+      "score": "-1hard/-411soft",
+      "hard": -1,
+      "contacts": 411,
+      "source_sha256": "d808b111fbc723867cb48abf27d07ae964f227c27f22fcb52e41edd6fcdcefa3"
+    },
+    {
+      "instance": "Input_UG5",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60000,
+      "score": "0hard/1489soft",
+      "hard": 0,
+      "contacts": 1489,
+      "source_sha256": "7612a60e738fadf4040a4be514bd280e49db29c7102b2a65873cedf1a1b0d122"
+    },
+    {
+      "instance": "Input_UG5",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60001,
+      "score": "0hard/-881soft",
+      "hard": 0,
+      "contacts": 881,
+      "source_sha256": "7ae624482e542425f7b359afa05fb217bf6dce3730a35432e5c77e6084c402eb"
+    },
+    {
+      "instance": "LargerInput_ITC1",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60002,
+      "score": "0hard/2447soft",
+      "hard": 0,
+      "contacts": 2447,
+      "source_sha256": "70f84d707ae9a5a070144e99be09fc6c3c8ceaba6ff975de3f9c151d5af6ecf8"
+    },
+    {
+      "instance": "LargerInput_ITC1",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60001,
+      "score": "0hard/-1739soft",
+      "hard": 0,
+      "contacts": 1739,
+      "source_sha256": "8fe2fd584bb64e42ef51737987ba6df79119580e22121f095cd6cda91a66db0d"
+    },
+    {
+      "instance": "LargerInput_ITC2",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60002,
+      "score": "0hard/4095soft",
+      "hard": 0,
+      "contacts": 4095,
+      "source_sha256": "c2dcb458824f96ef23c498041dd59723beafeeed533a1169962e8146fdc320a1"
+    },
+    {
+      "instance": "LargerInput_ITC2",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60007,
+      "score": "0hard/-3164soft",
+      "hard": 0,
+      "contacts": 3164,
+      "source_sha256": "e82701705b68adc3704a6d2fda382cac7a9d6d7a6da8827bb24c93d882155f8a"
+    },
+    {
+      "instance": "LargerInput_ITC3",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60006,
+      "score": "0hard/4477soft",
+      "hard": 0,
+      "contacts": 4477,
+      "source_sha256": "367a9aad3807763e24ed98c70f9524fb4e522bc6649c3e64d9426336bc0a5981"
+    },
+    {
+      "instance": "LargerInput_ITC3",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60010,
+      "score": "0hard/-3913soft",
+      "hard": 0,
+      "contacts": 3913,
+      "source_sha256": "407a117e50b9a117a5a57b83f8d69abe52ae5511879cdf22105d29f650ef17ce"
+    },
+    {
+      "instance": "LargerInput_ITC4",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60001,
+      "score": "0hard/1322soft",
+      "hard": 0,
+      "contacts": 1322,
+      "source_sha256": "9dc569eeeaf4d2802f41217c2ba909c31bf1c4a71545ce1b4d861350c53a845d"
+    },
+    {
+      "instance": "LargerInput_ITC4",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60003,
+      "score": "0hard/-987soft",
+      "hard": 0,
+      "contacts": 987,
+      "source_sha256": "ef58288fd7f09289d9e31e9ef3d9f5741acb0b0f489f7a9f8f5e822e50380cda"
+    },
+    {
+      "instance": "LargerInput_ITC5",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60009,
+      "score": "0hard/4799soft",
+      "hard": 0,
+      "contacts": 4799,
+      "source_sha256": "6002a9a57c449516c26cacba966b879d4d136eaf660d6a2dcbb4db0dbcfe1b04"
+    },
+    {
+      "instance": "LargerInput_ITC5",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60010,
+      "score": "-1hard/-3702soft",
+      "hard": -1,
+      "contacts": 3702,
+      "source_sha256": "0b4ec285ad6936ca04ae3f7c7ed8beee288243924670c68c0a98ff3b9d2e4a6b"
+    },
+    {
+      "instance": "LargerInput_ITC6",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60000,
+      "score": "0hard/1903soft",
+      "hard": 0,
+      "contacts": 1903,
+      "source_sha256": "c6e3091857dca78ca69889cb53377281066e2cf5c197f9943ce7fa9e8b4fe9dd"
+    },
+    {
+      "instance": "LargerInput_ITC6",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60003,
+      "score": "0hard/-1416soft",
+      "hard": 0,
+      "contacts": 1416,
+      "source_sha256": "7c62d168fc22119ae996f9bf9f7712aa34e13e1f17a89195a5971becae2fdd90"
+    },
+    {
+      "instance": "LargerInput_ITC7",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60015,
+      "score": "0hard/7855soft",
+      "hard": 0,
+      "contacts": 7855,
+      "source_sha256": "6484b65343678a2b4f577b6aad96d2088f78da9e76dc15b38cdd04d2f27b8875"
+    },
+    {
+      "instance": "LargerInput_ITC7",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60010,
+      "score": "-13hard/-6097soft",
+      "hard": -13,
+      "contacts": 6097,
+      "source_sha256": "69d98ba9160e9058233cdb31e06deb6bb75c3da95fd8902d6b2e824ef582932c"
+    },
+    {
+      "instance": "LargerInput_ITC8",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60002,
+      "score": "0hard/4232soft",
+      "hard": 0,
+      "contacts": 4232,
+      "source_sha256": "27a661b0725648501d9a80daddc6b801171c7785e67527e3e40c1af7d68a537d"
+    },
+    {
+      "instance": "LargerInput_ITC8",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60002,
+      "score": "0hard/-3143soft",
+      "hard": 0,
+      "contacts": 3143,
+      "source_sha256": "47c49971dc83479ee6bfde7e4227ef729ad1bdc347247f43afdfde4d1785187d"
+    },
+    {
+      "instance": "LargerInput_ITC9",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60002,
+      "score": "0hard/1133soft",
+      "hard": 0,
+      "contacts": 1133,
+      "source_sha256": "6843e80fbb5c6a4f494ee50e52f59b7cf6095dcf1dbdef62fd45d3fdcf6d6552"
+    },
+    {
+      "instance": "LargerInput_ITC9",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60003,
+      "score": "0hard/-896soft",
+      "hard": 0,
+      "contacts": 896,
+      "source_sha256": "12bd0f95fe699bac2849e1c77da214552ce4a3209f0bec1952bb89ec1ec48922"
+    },
+    {
+      "instance": "LargerInput_ITC10",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60009,
+      "score": "0hard/1523soft",
+      "hard": 0,
+      "contacts": 1523,
+      "source_sha256": "f5b48f7dc22423b1a32fdc518a5483a5fa73f4d8222781bbc9cc92d04f78b89b"
+    },
+    {
+      "instance": "LargerInput_ITC10",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60003,
+      "score": "0hard/-1035soft",
+      "hard": 0,
+      "contacts": 1035,
+      "source_sha256": "dd3f768423123a774690a473046502543799aa70b26320e8a244053c0986a869"
+    },
+    {
+      "instance": "LargerInput_ITC11",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60006,
+      "score": "0hard/10815soft",
+      "hard": 0,
+      "contacts": 10815,
+      "source_sha256": "782face783af1c98a36a245a39c0049980c5a5893cb0edd6ddd2756cba89b164"
+    },
+    {
+      "instance": "LargerInput_ITC11",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60008,
+      "score": "-7hard/-7458soft",
+      "hard": -7,
+      "contacts": 7458,
+      "source_sha256": "48d3718911a95ab24550dac2c7711c2d5fdf7dd84e1726c49b488aa2767cdb5c"
+    },
+    {
+      "instance": "LargerInput_ITC12",
+      "variant": "cm",
+      "budget_seconds": 60,
+      "elapsed_ms": 60000,
+      "score": "0hard/779soft",
+      "hard": 0,
+      "contacts": 779,
+      "source_sha256": "33d428441250ed41854344d6d7f54ab3af36456ce3cfa03733569c70b9740ec3"
+    },
+    {
+      "instance": "LargerInput_ITC12",
+      "variant": "cr",
+      "budget_seconds": 60,
+      "elapsed_ms": 60001,
+      "score": "0hard/-751soft",
+      "hard": 0,
+      "contacts": 751,
+      "source_sha256": "841b73877dceb075b869a9c1a708266d196a4a33d0a8838047fb88db39c73b5d"
+    }
+  ]
+}

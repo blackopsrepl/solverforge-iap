@@ -1,2 +1,8 @@
 /target
 **/*.rs.bk
+
+# local artifacts
+/target/
+/node_modules/
+/results/
+/scripts/__pycache__/

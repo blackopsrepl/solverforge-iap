@@ -45,6 +45,21 @@ def api(base, path, method="GET", body=None, timeout=30):
         return json.loads(resp.read().decode())
 
 
+def assert_port_free(port):
+    import socket
+
+    probe = socket.socket()
+    try:
+        probe.bind(("127.0.0.1", port))
+    except OSError as e:
+        raise SystemExit(
+            f"port {port} is already in use ({e}); kill stale solverforge_iap"
+            " processes or pick another sweep server pair"
+        )
+    finally:
+        probe.close()
+
+
 def wait_health(base, deadline=120):
     end = time.time() + deadline
     while time.time() < end:
@@ -82,6 +97,7 @@ def main():
     only = sys.argv[1:] or INSTANCES
     for variant in ("cm", "cr"):
         port = 7860 if variant == "cm" else 7861
+        assert_port_free(port)
         base = f"http://127.0.0.1:{port}"
         env = dict(os.environ, IAP_VARIANT=variant, PORT=str(port))
         log_path = os.path.join(RESULTS, f"server-{variant}.log")
@@ -93,16 +109,26 @@ def main():
                 stderr=subprocess.STDOUT,
                 cwd=APP,
             )
+            failures = []
             try:
                 if not wait_health(base):
                     print(f"[{variant}] server did not come up", file=sys.stderr)
                     continue
                 print(f"[{variant}] server up on {base}")
                 for inst in only:
-                    plan = api(base, f"/instances/{inst}")
-                    job_id, terminal, snap, analysis = solve_job(
-                        base, plan, hard_timeout=180
-                    )
+                    try:
+                        plan = api(base, f"/instances/{inst}")
+                        job_id, terminal, snap, analysis = solve_job(
+                            base, plan, hard_timeout=180
+                        )
+                    except urllib.error.HTTPError as e:
+                        e.read()
+                        failures.append((inst, f"HTTP {e.code}"))
+                        print(
+                            f"[{variant}] {inst:22s} FAILED      HTTP {e.code}",
+                            file=sys.stderr,
+                        )
+                        continue
                     out = {
                         "instance": inst,
                         "variant": variant,
@@ -120,7 +146,20 @@ def main():
                     print(
                         f"[{variant}] {inst:22s} {str(terminal):10s} best={best} current={cur}"
                     )
+                    # Free the job slot: the runtime retains at most MAX_JOBS
+                    # jobs per server, and terminal jobs hold a slot until
+                    # deleted (the same cleanup the workbench performs).
+                    try:
+                        api(base, f"/jobs/{job_id}", method="DELETE")
+                    except urllib.error.HTTPError:
+                        pass
             finally:
+                if failures:
+                    print(
+                        f"[{variant}] failures: "
+                        + ", ".join(f"{i} ({r})" for i, r in failures),
+                        file=sys.stderr,
+                    )
                 server.terminate()
                 try:
                     server.wait(timeout=10)

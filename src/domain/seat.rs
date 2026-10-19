@@ -15,7 +15,10 @@ pub struct Seat {
     /// Invigilator indexes available at this seat's exam timeslot, derived by
     /// the data layer from the invigilator availability facts. Read by the
     /// candidate-values hook `seat_candidates`; never read as a rule verdict.
-    #[serde(default)]
+    /// Invigilator indexes available at this seat's exam timeslot, derived by the
+    /// data layer (and idempotently on every posted plan). Solver-only data:
+    /// skipped in serde so API payloads stay at instance-file size.
+    #[serde(skip)]
     pub candidates: Vec<usize>,
     /// Objective sense of this plan, projected from `Plan::variant` by the data
     /// layer. Carried on the entity so the `contacts` group key reads it without

@@ -1,7 +1,46 @@
+# Native SolverForge only: construct, reach feasibility, optimize contacts.
+# Availability candidates remain model metadata; every rule is scored natively.
+random_seed = 1
+
+[termination]
+seconds_spent_limit = 60
+
 [[phases]]
 type = "construction_heuristic"
-construction_heuristic_type = "first_fit"
+construction_heuristic_type = "cheapest_insertion"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
 
+# Stop repairing as soon as the hard level reaches zero.
+[[phases]]
+type = "local_search"
+[phases.termination]
+best_score_limit = "0hard/-1000000000soft"
+[phases.acceptor]
+type = "late_acceptance"
+late_acceptance_size = 400
+[phases.forager]
+type = "accepted_count"
+limit = 1
+[phases.move_selector]
+type = "union_move_selector"
+[[phases.move_selector.selectors]]
+type = "change_move_selector"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
+[[phases.move_selector.selectors]]
+type = "swap_move_selector"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
+[[phases.move_selector.selectors]]
+type = "ruin_recreate_move_selector"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
+min_ruin_count = 2
+max_ruin_count = 6
+recreate_heuristic_type = "cheapest_insertion"
+
+# Optimize only the actual contact objective; retain hard constraints throughout.
 [[phases]]
 type = "local_search"
 [phases.acceptor]
@@ -9,12 +48,30 @@ type = "late_acceptance"
 late_acceptance_size = 400
 [phases.forager]
 type = "accepted_count"
-limit = 4
+limit = 1
+[phases.move_selector]
+type = "union_move_selector"
+[[phases.move_selector.selectors]]
+type = "change_move_selector"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
+[[phases.move_selector.selectors]]
+type = "swap_move_selector"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
+[[phases.move_selector.selectors]]
+type = "ruin_recreate_move_selector"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
+min_ruin_count = 2
+max_ruin_count = 6
+recreate_heuristic_type = "cheapest_insertion"
 
-[termination]
-seconds_spent_limit = 30
+[[phases.move_selector.selectors]]
+type = "nearby_swap_move_selector"
+entity_class = "Seat"
+variable_name = "invigilator_idx"
+max_nearby = 50
 
-# Opt in to bounded candidate-pull diagnostics when needed. Trace detail is
-# retained separately from ordinary status, snapshot, and SSE telemetry.
-# [candidate_trace]
-# max_entries = 100000
+[app]
+name = "solverforge-iap"

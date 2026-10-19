@@ -1,7 +1,10 @@
+scalar_groups = []
+conflict_repairs = []
+
 [app]
-name = "iap-tmp"
+name = "solverforge-iap"
 starter = "neutral-shell"
-shell = "api"
+shell = "web"
 cli_version = "3.6.0"
 
 [runtime]
@@ -10,8 +13,61 @@ runtime_source = "crates.io: solverforge 0.22.0"
 
 [demo]
 default_size = "standard"
-available_sizes = ["small", "standard", "large"]
+available_sizes = [
+    "small",
+    "standard",
+    "large",
+]
 
 [solution]
 name = "Plan"
 score = "HardSoftScore"
+scalar_groups_path = ""
+conflict_repairs_path = ""
+
+[[facts]]
+name = "invigilator"
+plural = "invigilators"
+kind = "problem_fact"
+
+[[facts]]
+name = "exam"
+plural = "exams"
+kind = "problem_fact"
+
+[[entities]]
+name = "seat"
+plural = "seats"
+kind = "planning_entity"
+
+[[variables]]
+entity = "seat"
+entity_plural = "seats"
+field = "invigilator_idx"
+kind = "scalar"
+range = "invigilators"
+elements = ""
+allows_unassigned = false
+candidate_values = "seat_candidates"
+nearby_entity_candidates = "same_slot_seats"
+enabled = true
+
+[[constraints]]
+name = "availability"
+module = "availability"
+enabled = true
+
+[[constraints]]
+name = "contacts"
+module = "contacts"
+enabled = true
+
+[[constraints]]
+name = "slot_conflict"
+module = "slot_conflict"
+enabled = true
+
+[[constraints]]
+name = "workload_bounds"
+module = "workload_bounds"
+enabled = true

@@ -1,0 +1,99 @@
+/* Layout and density; SolverForge UI supplies all component styling. */
+.iap {
+  --sf-header-height: 48px;
+}
+.iap .sf-header {
+  gap: 12px;
+  padding: 0 12px;
+}
+.iap .sf-header-logo {
+  height: 28px;
+  width: 28px;
+  flex-shrink: 0;
+}
+.iap .sf-header-brand,
+.iap .sf-header-actions {
+  flex-shrink: 0;
+}
+.iap .sf-header-nav {
+  min-width: 0;
+  overflow-x: auto;
+}
+.iap .sf-nav-btn {
+  flex-shrink: 0;
+}
+.iap .sf-content {
+  margin: 12px;
+  min-width: 0;
+}
+.iap-controls,
+.iap-filters,
+.iap-metrics,
+.iap-rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.iap-controls,
+.iap-filters {
+  padding: 8px 12px;
+}
+.iap-controls label,
+.iap-filters label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--sf-text-xs);
+}
+.iap-controls input[type='number'] {
+  width: 72px;
+}
+.iap-filters input[type='search'] {
+  width: 190px;
+}
+.iap-metrics {
+  margin-left: auto;
+}
+.iap-rule {
+  margin-top: 8px;
+}
+.iap .sf-rail-timeline-toolbar,
+.iap .sf-rail-timeline-lane-mode {
+  display: none;
+}
+.iap .sf-rail-timeline {
+  max-width: 100%;
+}
+.iap .iap-detail[hidden] {
+  display: none;
+}
+/* The component's clock row has no meaning for ordinal exam slots. */
+.iap .sf-rail-timeline-tooltip .sf-tooltip-row:nth-child(3) {
+  display: none;
+}
+@media (max-width: 600px) {
+  .iap-metrics {
+    margin-left: 0;
+  }
+  .iap .sf-content {
+    overflow: auto;
+  }
+  .iap .sf-rail-timeline {
+    min-width: 500px;
+  }
+  .iap .sf-header-actions {
+    margin-left: 4px;
+  }
+  .iap .sf-statusbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+  }
+  .iap .sf-header-actions .sf-btn {
+    font-size: 0;
+  }
+  .iap .sf-header-actions .sf-btn i {
+    font-size: 14px;
+  }
+}

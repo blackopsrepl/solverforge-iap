@@ -41,6 +41,8 @@ pub fn router(state: Arc<AppState>) -> Router {
         .route("/info", get(info))
         .route("/demo-data", get(list_demo_data))
         .route("/demo-data/{id}", get(get_demo_data))
+        .route("/instances", get(list_instances))
+        .route("/instances/{id}", get(get_instance))
         .route("/jobs", post(create_job))
         .route("/jobs/qualified", post(create_qualified_job))
         .route("/jobs/{id}", get(get_job).delete(delete_job))
@@ -70,6 +72,7 @@ struct InfoResponse {
     name: &'static str,
     version: &'static str,
     solver_engine: &'static str,
+    variant: &'static str,
 }
 
 async fn info() -> Json<InfoResponse> {
@@ -77,6 +80,10 @@ async fn info() -> Json<InfoResponse> {
         name: env!("CARGO_PKG_NAME"),
         version: env!("CARGO_PKG_VERSION"),
         solver_engine: "SolverForge",
+        variant: match crate::solver::variant::variant() {
+            crate::solver::variant::Variant::Cm => "cm",
+            crate::solver::variant::Variant::Cr => "cr",
+        },
     })
 }
 
@@ -100,6 +107,28 @@ async fn list_demo_data() -> Json<DemoDataCatalogResponse> {
 async fn get_demo_data(Path(id): Path<String>) -> Result<Json<PlanDto>, StatusCode> {
     let demo = id.parse::<DemoData>().map_err(|_| StatusCode::NOT_FOUND)?;
     let plan = generate(demo);
+    Ok(Json(PlanDto::from_plan(&plan)))
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct InstanceCatalogResponse {
+    default_id: &'static str,
+    available_ids: Vec<&'static str>,
+    instances: Vec<crate::data::instances::InstanceInfo>,
+}
+
+async fn list_instances() -> Json<InstanceCatalogResponse> {
+    let catalog = crate::data::instances::catalog();
+    Json(InstanceCatalogResponse {
+        default_id: "Input_UG1",
+        available_ids: catalog.iter().map(|i| i.id).collect(),
+        instances: catalog.clone(),
+    })
+}
+
+async fn get_instance(Path(id): Path<String>) -> Result<Json<PlanDto>, StatusCode> {
+    let plan = crate::data::instances::load(&id).ok_or(StatusCode::NOT_FOUND)?;
     Ok(Json(PlanDto::from_plan(&plan)))
 }
 

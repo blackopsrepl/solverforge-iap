@@ -2,7 +2,7 @@
 
 use std::str::FromStr;
 
-use crate::domain::Plan;
+use crate::domain::{Exam, Invigilator, Plan, Seat};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DemoData {
@@ -55,12 +55,51 @@ impl FromStr for DemoData {
 
 pub fn generate(demo: DemoData) -> Plan {
     match demo {
-        DemoData::Small => generate_plan(),
-        DemoData::Standard => generate_plan(),
-        DemoData::Large => generate_plan(),
+        DemoData::Small => generate_plan(2, 3, 5),
+        DemoData::Standard => generate_plan(4, 6, 12),
+        DemoData::Large => generate_plan(8, 11, 20),
     }
 }
 
-fn generate_plan() -> Plan {
-    Plan::new()
+fn generate_plan(count_invigilators: usize, count_exams: usize, count_seats: usize) -> Plan {
+    let invigilators = (0..count_invigilators)
+        .map(|idx| Invigilator {
+            id: format!("invigilator-{idx}"),
+            name: format!("invigilator-{idx}"),
+            index: idx + 1,
+            group: idx + 1,
+            min_workload: ((idx % 11) as i64) - 5,
+            max_workload: ((idx % 11) as i64) - 5,
+            available_slots: vec![],
+        })
+        .collect::<Vec<_>>();
+
+    let exams = (0..count_exams)
+        .map(|idx| Exam {
+            id: format!("exam-{idx}"),
+            name: format!("exam-{idx}"),
+            index: idx + 1,
+            slot: idx + 1,
+            room: format!("exam-room-{idx}"),
+            required: ((idx % 11) as i64) - 5,
+        })
+        .collect::<Vec<_>>();
+
+    let seats = (0..count_seats)
+        .map(|idx| Seat {
+            id: format!("seat-{idx}"),
+            exam_index: idx + 1,
+            position: idx + 1,
+            slot: idx + 1,
+            candidates: vec![],
+            maximize: idx % 2 == 0,
+            invigilator_idx: if count_invigilators == 0 {
+                None
+            } else {
+                Some(idx % count_invigilators)
+            },
+        })
+        .collect::<Vec<_>>();
+
+    Plan::new(invigilators, exams, seats)
 }

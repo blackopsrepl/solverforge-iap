@@ -1,7 +1,8 @@
-/* iap-tmp — SolverForge HTTP API
-   Run with: solverforge server */
+/* solverforge-iap — SolverForge HTTP API
+Run with: solverforge server */
 
-use iap_tmp::api;
+use solverforge_iap::api;
+use solverforge_iap::solver::variant::variant;
 
 use std::net::SocketAddr;
 use std::sync::Arc;
@@ -11,6 +12,10 @@ use tower_http::cors::{Any, CorsLayer};
 async fn main() {
     solverforge::console::init();
 
+    // Pins the process's objective variant at boot (IAP_VARIANT=cm|cr) and
+    // states it in the log so results can't be attributed to the wrong one.
+    println!("▸ iap objective variant: {:?}", variant());
+
     let state = Arc::new(api::AppState::new());
 
     let cors = CorsLayer::new()
@@ -18,14 +23,17 @@ async fn main() {
         .allow_methods(Any)
         .allow_headers(Any);
 
-    let app = api::router(state).layer(cors);
+    let app = api::router(state)
+        .merge(solverforge_ui::routes())
+        .fallback_service(tower_http::services::ServeDir::new("static"))
+        .layer(cors);
 
     let port = std::env::var("PORT")
         .ok()
         .and_then(|value| value.parse::<u16>().ok())
         .unwrap_or(7860);
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
-    println!("▸ iap-tmp API listening on http://{}", addr);
+    println!("▸ solverforge-iap API listening on http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();

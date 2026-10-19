@@ -1,0 +1,50 @@
+{
+  "conflictRepairs": [],
+  "constraints": [
+    "audit_tests",
+    "availability",
+    "contact_interdepartmental",
+    "contact_total",
+    "seat_required",
+    "slot_conflict",
+    "workload_bounds"
+  ],
+  "entities": [
+    {
+      "label": "Seat",
+      "name": "seat",
+      "plural": "seats"
+    }
+  ],
+  "facts": [
+    {
+      "label": "Invigilator",
+      "name": "invigilator",
+      "plural": "invigilators"
+    },
+    {
+      "label": "Exam",
+      "name": "exam",
+      "plural": "exams"
+    }
+  ],
+  "scalarGroups": [],
+  "views": [
+    {
+      "allowsUnassigned": false,
+      "countableRange": null,
+      "entity": "seat",
+      "entityPlural": "seats",
+      "id": "seat-invigilator_idx",
+      "kind": "scalar",
+      "label": "Seat · invigilator_idx",
+      "listMetadata": {},
+      "scalarHooks": {
+        "candidateValues": "seat_candidates",
+        "nearbyEntityCandidates": "same_slot_seats"
+      },
+      "sourcePlural": "invigilators",
+      "variableField": "invigilator_idx"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-/* iap-tmp — neutral constraint optimizer built with SolverForge
+/* solverforge-iap — neutral constraint optimizer built with SolverForge
 
 Structure:
   domain/      — Plan (solution) plus CLI-generated entities and facts

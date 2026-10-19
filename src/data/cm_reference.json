@@ -1,0 +1,37 @@
+{
+  "variant": "cm",
+  "objective": "distinct_interdepartmental_contacts",
+  "paper": {
+    "title": "Improved bounds and solutions for the invigilator assignment problem",
+    "author": "Reinout Annaert",
+    "conference": "PATAT 2026",
+    "table": 3,
+    "pdf_page": 10,
+    "printed_page": 284
+  },
+  "notes": [
+    "Table 3 proves optimality for 15 instances by matching its UB2 bound.",
+    "UG3 optimum 1097 and UG5 optimum 1494 are subsequent updates supplied by Vittorio; the PDF does not prove these two optima.",
+    "An objective value can be compared with these optima only after all hard constraints are satisfied.",
+    "These reference values do not apply to the contact-reduction variant."
+  ],
+  "instances": [
+    {"id":"LargerInput_ITC1","optimal":2457,"paper_upper_bound":2457,"paper_best":2457,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC2","optimal":4137,"paper_upper_bound":4137,"paper_best":4137,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC3","optimal":4558,"paper_upper_bound":4558,"paper_best":4558,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC4","optimal":1325,"paper_upper_bound":1325,"paper_best":1325,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC5","optimal":4871,"paper_upper_bound":4871,"paper_best":4871,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC6","optimal":1912,"paper_upper_bound":1912,"paper_best":1912,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC7","optimal":8175,"paper_upper_bound":8175,"paper_best":8175,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC8","optimal":4262,"paper_upper_bound":4262,"paper_best":4262,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC9","optimal":1133,"paper_upper_bound":1133,"paper_best":1133,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC10","optimal":1524,"paper_upper_bound":1524,"paper_best":1524,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC11","optimal":11079,"paper_upper_bound":11079,"paper_best":11079,"optimality_source":"paper_table_3"},
+    {"id":"LargerInput_ITC12","optimal":779,"paper_upper_bound":779,"paper_best":779,"optimality_source":"paper_table_3"},
+    {"id":"Input_UG1","optimal":78,"paper_upper_bound":78,"paper_best":78,"optimality_source":"paper_table_3"},
+    {"id":"Input_UG2","optimal":1507,"paper_upper_bound":1507,"paper_best":1507,"optimality_source":"paper_table_3"},
+    {"id":"Input_UG3","optimal":1097,"paper_upper_bound":1098,"paper_best":1097,"optimality_source":"user_update"},
+    {"id":"Input_UG4","optimal":704,"paper_upper_bound":704,"paper_best":704,"optimality_source":"paper_table_3"},
+    {"id":"Input_UG5","optimal":1494,"paper_upper_bound":1495,"paper_best":1493,"optimality_source":"user_update"}
+  ]
+}

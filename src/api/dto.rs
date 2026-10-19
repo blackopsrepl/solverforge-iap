@@ -138,15 +138,8 @@ impl PlanDto {
             Value::Object(map) => map,
             _ => Map::new(),
         };
-        let score = fields.remove("score").and_then(|value| {
-            if value.is_null() {
-                None
-            } else if let Some(score) = value.as_str() {
-                Some(score.to_string())
-            } else {
-                Some(value.to_string())
-            }
-        });
+        fields.remove("score");
+        let score = plan.score.map(|score| score.to_string());
 
         Self { fields, score }
     }
@@ -155,7 +148,25 @@ impl PlanDto {
         let mut fields = self.fields.clone();
         let _ = &self.score;
         fields.insert("score".to_string(), Value::Null);
-        serde_json::from_value(Value::Object(fields))
+        // A payload that names no variant is solved for the server's default
+        // objective (`IAP_VARIANT`), not for `Variant::default()`.
+        if !fields.contains_key("variant") {
+            fields.insert(
+                "variant".to_string(),
+                serde_json::to_value(crate::solver::variant::variant())?,
+            );
+        }
+        let mut plan: Plan = serde_json::from_value(Value::Object(fields))?;
+        if !(1..=3600).contains(&plan.duration_seconds) {
+            return Err(serde::de::Error::custom(
+                "duration_seconds must be between 1 and 3600",
+            ));
+        }
+        // Derives the seat candidate lists for plans posted without them
+        // (demo data included). Pure projection of invigilator availability;
+        // idempotent for plans that arrived pre-derived.
+        crate::data::instances::derive_seat_candidates(&mut plan);
+        Ok(plan)
     }
 }
 
@@ -283,7 +294,7 @@ fn parse_sha256(name: &str, value: &str) -> Result<CandidateTraceExternalDigest,
         ));
     }
     let mut bytes = [0_u8; 32];
-    for (index, pair) in value.as_bytes().chunks_exact(2).enumerate() {
+    for (index, pair) in value.as_bytes().as_chunks::<2>().0.iter().enumerate() {
         let high = hex_nibble(pair[0]).ok_or_else(|| format!("{name} must be hexadecimal"))?;
         let low = hex_nibble(pair[1]).ok_or_else(|| format!("{name} must be hexadecimal"))?;
         bytes[index] = (high << 4) | low;
@@ -297,5 +308,56 @@ fn hex_nibble(value: u8) -> Option<u8> {
         b'a'..=b'f' => Some(value - b'a' + 10),
         b'A'..=b'F' => Some(value - b'A' + 10),
         _ => None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn input() -> PlanDto {
+        PlanDto::from_plan(&crate::data::instances::load("Input_UG1").unwrap())
+    }
+
+    #[test]
+    fn duration_defaults_and_round_trips_through_the_job_payload() {
+        let mut dto = input();
+        dto.fields.remove("duration_seconds");
+        assert_eq!(dto.to_domain().unwrap().duration_seconds, 60);
+        for seconds in [1_u64, 17, 3600] {
+            dto.fields.insert("duration_seconds".into(), seconds.into());
+            let plan = dto.to_domain().unwrap();
+            assert_eq!(plan.duration_seconds, seconds);
+            assert_eq!(
+                PlanDto::from_plan(&plan).fields["duration_seconds"],
+                seconds
+            );
+        }
+    }
+
+    #[test]
+    fn duration_rejects_out_of_range_and_non_integer_values() {
+        let mut dto = input();
+        for invalid in [
+            serde_json::json!(0),
+            serde_json::json!(3601),
+            serde_json::json!(-1),
+            serde_json::json!(1.5),
+            Value::Null,
+        ] {
+            dto.fields
+                .insert("duration_seconds".into(), invalid.clone());
+            assert!(dto.to_domain().is_err(), "accepted {invalid}");
+        }
+    }
+
+    #[test]
+    fn snapshot_score_uses_the_native_display_contract() {
+        let mut plan = crate::data::instances::load("Input_UG1").unwrap();
+        plan.score = Some(HardSoftScore::of(-3, 78));
+        let dto = PlanDto::from_plan(&plan);
+        assert_eq!(dto.score.as_deref(), Some("-3hard/78soft"));
+        assert!(!dto.fields.contains_key("score"));
+        assert!(dto.to_domain().unwrap().score.is_none());
     }
 }

@@ -1,0 +1,30 @@
+[package]
+name = "iap-tmp"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.95"
+description = "Constraint optimizer built with SolverForge"
+
+[[bin]]
+name = "iap_tmp"
+path = "src/main.rs"
+
+[dependencies]
+solverforge = { version = "0.22.0", features = ["serde", "console", "verbose-logging"] }
+
+# HTTP API server
+axum = "0.8.9"
+tokio = { version = "1.52.3", features = ["full"] }
+tokio-stream = { version = "0.1.18", features = ["sync"] }
+tower-http = { version = "0.6.11", features = ["cors"] }
+
+# Serialization
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+schemars = { version = "1.0", optional = true }
+
+# Utilities
+parking_lot = "0.12.5"
+
+[features]
+schema = ["dep:schemars"]

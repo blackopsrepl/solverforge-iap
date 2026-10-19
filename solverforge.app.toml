@@ -1,0 +1,17 @@
+[app]
+name = "iap-tmp"
+starter = "neutral-shell"
+shell = "api"
+cli_version = "3.6.0"
+
+[runtime]
+target = "solverforge 0.22.0"
+runtime_source = "crates.io: solverforge 0.22.0"
+
+[demo]
+default_size = "standard"
+available_sizes = ["small", "standard", "large"]
+
+[solution]
+name = "Plan"
+score = "HardSoftScore"

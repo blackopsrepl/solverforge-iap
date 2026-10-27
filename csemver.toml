@@ -12,6 +12,21 @@ packageFiles = [
   { filename = "Cargo.toml", type = "regex", pattern = '^version = "([0-9]+\.[0-9]+\.[0-9]+)"', versionGroup = 1 },
 ]
 
+# Top-level key: it must precede the first [[bumpFiles]] header, or TOML
+# scopes it into that table and csemver silently falls back to default types.
+types = [
+  { type = "feat", section = "Features" },
+  { type = "fix", section = "Bug Fixes" },
+  { type = "perf", section = "Performance" },
+  { type = "docs", section = "Documentation" },
+  { type = "chore", effect = "hidden" },
+  { type = "style", effect = "hidden" },
+  { type = "refactor", effect = "hidden" },
+  { type = "test", effect = "hidden" },
+  { type = "build", effect = "hidden" },
+  { type = "ci", effect = "hidden" },
+]
+
 [[bumpFiles]]
 filename = "Cargo.toml"
 type = "regex"
@@ -27,16 +42,3 @@ pattern = '''^\[\[package\]\]
 name = "solverforge-iap"
 version = "([0-9]+\.[0-9]+\.[0-9]+)"'''
 versionGroup = 1
-
-types = [
-  { type = "feat", section = "Features" },
-  { type = "fix", section = "Bug Fixes" },
-  { type = "perf", section = "Performance" },
-  { type = "docs", section = "Documentation" },
-  { type = "chore", effect = "hidden" },
-  { type = "style", effect = "hidden" },
-  { type = "refactor", effect = "hidden" },
-  { type = "test", effect = "hidden" },
-  { type = "build", effect = "hidden" },
-  { type = "ci", effect = "hidden" },
-]

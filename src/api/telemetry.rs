@@ -65,6 +65,8 @@ pub struct PhaseTelemetryDto {
     pub step_count: u64,
     pub moves_generated: u64,
     pub moves_evaluated: u64,
+    /// Candidates parallel evaluation ran ahead and then discarded.
+    pub moves_speculative: u64,
     pub moves_accepted: u64,
     pub moves_applied: u64,
     pub moves_score_improving: u64,
@@ -102,6 +104,8 @@ pub struct TelemetryDto {
     pub step_count: u64,
     pub moves_generated: u64,
     pub moves_evaluated: u64,
+    /// Candidates parallel evaluation ran ahead and then discarded.
+    pub moves_speculative: u64,
     pub moves_accepted: u64,
     pub moves_applied: u64,
     pub moves_score_improving: u64,
@@ -127,7 +131,9 @@ pub struct TelemetryDto {
     pub evaluation_ms: u64,
     pub moves_per_second: u64,
     pub acceptance_rate: f64,
-    pub phase: Option<PhaseTelemetryDto>,
+    /// Every phase started so far, in execution order; the last entry of a
+    /// progress snapshot is the phase still running.
+    pub phases: Vec<PhaseTelemetryDto>,
     pub selector_telemetry: Vec<SelectorTelemetryDto>,
     pub move_telemetry: Vec<MoveTelemetryDto>,
     pub applied_move_trace: Vec<AppliedMoveTelemetryDto>,
@@ -140,6 +146,7 @@ impl TelemetryDto {
             step_count: telemetry.step_count,
             moves_generated: telemetry.moves_generated,
             moves_evaluated: telemetry.moves_evaluated,
+            moves_speculative: telemetry.moves_speculative,
             moves_accepted: telemetry.moves_accepted,
             moves_applied: telemetry.moves_applied,
             moves_score_improving: telemetry.moves_score_improving,
@@ -168,10 +175,11 @@ impl TelemetryDto {
                 telemetry.moves_accepted,
                 telemetry.moves_evaluated,
             ),
-            phase: telemetry
-                .phase
-                .as_ref()
-                .map(PhaseTelemetryDto::from_runtime),
+            phases: telemetry
+                .phases
+                .iter()
+                .map(PhaseTelemetryDto::from_runtime)
+                .collect(),
             selector_telemetry: telemetry
                 .selector_telemetry
                 .iter()
@@ -248,6 +256,7 @@ impl PhaseTelemetryDto {
             step_count: telemetry.step_count,
             moves_generated: telemetry.moves_generated,
             moves_evaluated: telemetry.moves_evaluated,
+            moves_speculative: telemetry.moves_speculative,
             moves_accepted: telemetry.moves_accepted,
             moves_applied: telemetry.moves_applied,
             moves_score_improving: telemetry.moves_score_improving,
@@ -654,6 +663,7 @@ fn candidate_trace_disposition_label(disposition: CandidateTraceDisposition) -> 
         CandidateTraceDisposition::ForagerIgnored => "forager_ignored",
         CandidateTraceDisposition::Selected => "selected",
         CandidateTraceDisposition::Applied => "applied",
+        CandidateTraceDisposition::DiscardedSpeculative => "discarded_speculative",
     }
 }
 

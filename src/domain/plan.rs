@@ -37,6 +37,10 @@ pub struct Plan {
     /// Wall-clock solve budget supplied with each job, in seconds.
     #[serde(default = "default_duration")]
     pub duration_seconds: u64,
+    /// Local-search evaluators for this job, main thread included. Absent
+    /// keeps `solver.toml`'s `move_thread_count`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub move_threads: Option<usize>,
     /// Immutable metadata for the native same-timeslot nearby-swap selector.
     #[serde(skip)]
     pub seats_by_slot: Box<[Vec<usize>]>,
@@ -60,6 +64,7 @@ impl Plan {
             score: None,
             variant: crate::solver::variant::variant(),
             duration_seconds: default_duration(),
+            move_threads: None,
             seats_by_slot: Box::default(),
         }
     }
@@ -70,7 +75,11 @@ fn default_duration() -> u64 {
 }
 
 fn configure_solver(plan: &Plan, config: solverforge::SolverConfig) -> solverforge::SolverConfig {
-    config.with_termination_seconds(plan.duration_seconds)
+    let mut config = config.with_termination_seconds(plan.duration_seconds);
+    if let Some(threads) = plan.move_threads {
+        config.move_thread_count = solverforge::MoveThreadCount::Count(threads);
+    }
+    config
 }
 
 // @solverforge:begin scalar-groups

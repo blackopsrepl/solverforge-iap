@@ -1,6 +1,12 @@
 # Native SolverForge only: construct, reach feasibility, optimize contacts.
 # Availability candidates remain model metadata; every rule is scored natively.
 random_seed = 1
+# Local-search evaluators per step, main thread included. Parallel evaluation
+# keeps the sequential acceptance order but replays every committed move on
+# each replica; on IAP that replay (ruin-recreate above all) costs more than
+# the parallel trials save, so the default stays sequential. A job opts in
+# with `move_threads` (1-32) in its payload.
+move_thread_count = { count = 1 }
 
 [termination]
 seconds_spent_limit = 60

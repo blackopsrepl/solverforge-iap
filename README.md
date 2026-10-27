@@ -173,6 +173,13 @@ make check                                   # fmt + clippy + tests + model chec
 Sweep output is separated by budget (`results/60s/`, `results/600s/`).
 Preview the configuration without starting any jobs with
 `make sweep SECONDS=600 SWEEP_FLAGS=--dry-run`.
+Local search runs sequentially by default. A job can opt into parallel
+evaluation with `move_threads` (1–32) in its payload, or a whole sweep with
+`make sweep SWEEP_FLAGS="--move-threads 4"`. On this model it is currently
+slower: at 20 s on cores 6–11, four evaluators completed 63% fewer
+local-search steps on UG3 and 43% fewer on ITC1, and ended with fewer contacts
+(1081 vs 1086, 2364 vs 2394), because every committed move is replayed on
+each replica.
 The 600-second sweep runs each instance once per variant; the paper's main
 comparison uses five independent repetitions per instance and variant.
 
@@ -186,7 +193,7 @@ The HTTP API is the same surface the UI uses:
 GET  /health                     liveness
 GET  /instances                  instance catalog
 GET  /instances/{id}             raw plan
-POST /jobs                       start a solve (duration_seconds, optional variant “cm” or “cr”)
+POST /jobs                       start a solve (duration_seconds, optional variant “cm” or “cr”, optional move_threads)
 GET  /jobs/{id}/status           score, telemetry, lifecycle
 GET  /jobs/{id}/snapshot         assignments
 GET  /jobs/{id}/analysis         per-constraint breakdown

@@ -118,6 +118,13 @@ def main():
         help="solve budget per job (default: 60)",
     )
     parser.add_argument(
+        "--move-threads",
+        type=int,
+        choices=range(1, 33),
+        metavar="N",
+        help="local-search evaluators per job (1-32; default: solver.toml)",
+    )
+    parser.add_argument(
         "--output", help="output directory (default: results/<seconds>s)"
     )
     parser.add_argument(
@@ -164,6 +171,8 @@ def main():
                     try:
                         plan = api(base, f"/instances/{inst}")
                         plan["duration_seconds"] = args.seconds
+                        if args.move_threads:
+                            plan["move_threads"] = args.move_threads
                         job_id, terminal, snap, analysis = solve_job(
                             base, plan, hard_timeout=hard_timeout
                         )

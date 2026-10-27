@@ -162,6 +162,15 @@ impl PlanDto {
                 "duration_seconds must be between 1 and 3600",
             ));
         }
+        // SolverForge caps evaluators at one 32-candidate window.
+        if plan
+            .move_threads
+            .is_some_and(|threads| !(1..=32).contains(&threads))
+        {
+            return Err(serde::de::Error::custom(
+                "move_threads must be between 1 and 32",
+            ));
+        }
         // Derives the seat candidate lists for plans posted without them
         // (demo data included). Pure projection of invigilator availability;
         // idempotent for plans that arrived pre-derived.
@@ -332,6 +341,29 @@ mod tests {
                 PlanDto::from_plan(&plan).fields["duration_seconds"],
                 seconds
             );
+        }
+    }
+
+    #[test]
+    fn move_threads_round_trip_and_reject_out_of_range_values() {
+        let mut dto = input();
+        assert_eq!(dto.to_domain().unwrap().move_threads, None);
+        assert!(!PlanDto::from_plan(&dto.to_domain().unwrap())
+            .fields
+            .contains_key("move_threads"));
+        for threads in [1_usize, 4, 32] {
+            dto.fields.insert("move_threads".into(), threads.into());
+            let plan = dto.to_domain().unwrap();
+            assert_eq!(plan.move_threads, Some(threads));
+            assert_eq!(PlanDto::from_plan(&plan).fields["move_threads"], threads);
+        }
+        for invalid in [
+            serde_json::json!(0),
+            serde_json::json!(33),
+            serde_json::json!(-1),
+        ] {
+            dto.fields.insert("move_threads".into(), invalid.clone());
+            assert!(dto.to_domain().is_err(), "accepted move_threads {invalid}");
         }
     }
 

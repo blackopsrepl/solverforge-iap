@@ -76,7 +76,7 @@ fn default_duration() -> u64 {
 
 fn configure_solver(plan: &Plan, config: solverforge::SolverConfig) -> solverforge::SolverConfig {
     let mut config = config.with_termination_seconds(plan.duration_seconds);
-    if let Some(threads) = plan.move_threads {
+    if let Some(threads) = plan.move_threads.and_then(std::num::NonZeroUsize::new) {
         config.move_thread_count = solverforge::MoveThreadCount::Count(threads);
     }
     config

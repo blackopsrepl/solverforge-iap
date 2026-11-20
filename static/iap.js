@@ -690,9 +690,7 @@
       score = analysis && analysis.score;
     body.append($('span', { className: 'sf-chip' }, score || '—'));
     ((analysis && analysis.constraints) || []).forEach(function (rule) {
-      var hard =
-          /hard/.test(rule.weight || '') &&
-          !String(rule.weight).startsWith('0hard'),
+      var hard = rule.isHard && rule.weightMultiplier > 0,
         m = /^(-?\d+)hard/.exec(rule.score),
         valid = m && Number(m[1]) === 0;
       body.append(

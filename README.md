@@ -201,9 +201,9 @@ GET  /jobs/{id}/analysis         per-constraint breakdown
 
 ## Built with
 
-- [SolverForge](https://crates.io/crates/solverforge) 0.23 — native
+- [SolverForge](https://crates.io/crates/solverforge) 0.31 — native
   constraint-solver runtime and scoring streams
-- [solverforge-cli](https://crates.io/crates/solverforge-cli) 3.6 —
+- [solverforge-cli](https://crates.io/crates/solverforge-cli) 4.2 —
   model scaffolding, codegen and release checks
 - [solverforge-ui](https://crates.io/crates/solverforge-ui) 0.9 — the
   component library behind the workbench (rail timeline, header, status bar)

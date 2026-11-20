@@ -2,11 +2,11 @@ use parking_lot::RwLock;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::sync::Arc;
-use tokio::sync::{broadcast, mpsc};
+use tokio::sync::broadcast;
 
 use solverforge::{
     HardSoftScore, QualifiedCandidateTraceRunProvenance, SolverEvent, SolverEventMetadata,
-    SolverLifecycleState, SolverManager, SolverManagerError, SolverSnapshot,
+    SolverEventReceiver, SolverLifecycleState, SolverManager, SolverManagerError, SolverSnapshot,
     SolverSnapshotAnalysis, SolverStatus, SolverTelemetryDetail, SolverTerminalReason,
 };
 
@@ -64,11 +64,7 @@ impl SolverService {
         Ok(self.retain_job(job_id, receiver))
     }
 
-    fn retain_job(
-        &self,
-        job_id: usize,
-        receiver: mpsc::UnboundedReceiver<SolverEvent<Plan>>,
-    ) -> String {
+    fn retain_job(&self, job_id: usize, receiver: SolverEventReceiver<Plan>) -> String {
         let (sse_tx, _) = broadcast::channel(64);
 
         self.jobs.write().insert(
@@ -166,7 +162,7 @@ async fn drain_receiver(
     jobs: Arc<RwLock<HashMap<usize, JobState>>>,
     job_id: usize,
     sse_tx: broadcast::Sender<String>,
-    mut receiver: mpsc::UnboundedReceiver<SolverEvent<Plan>>,
+    mut receiver: SolverEventReceiver<Plan>,
 ) {
     while let Some(event) = receiver.recv().await {
         let payload = match &event {
@@ -326,5 +322,31 @@ fn terminal_reason_label(reason: SolverTerminalReason) -> &'static str {
 impl Default for SolverService {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    static TEST_MANAGER: SolverManager<Plan> = SolverManager::new();
+
+    // Runs the embedded solver.toml through the runtime: a key the config
+    // schema rejects fails the job at start, which compiling never shows. The
+    // budget leaves construction room to finish while other tests share CPUs.
+    #[test]
+    fn embedded_solver_config_completes_a_solve() {
+        let mut plan = crate::data::instances::load("Input_UG1").unwrap();
+        plan.duration_seconds = 5;
+        crate::data::instances::derive_seat_candidates(&mut plan);
+        let (_, mut receiver) = TEST_MANAGER.solve(plan).unwrap();
+        while let Some(event) = receiver.blocking_recv() {
+            match event {
+                SolverEvent::Failed { error, .. } => panic!("solve failed: {error}"),
+                SolverEvent::Completed { .. } => return,
+                _ => {}
+            }
+        }
+        panic!("event stream ended without completing");
     }
 }

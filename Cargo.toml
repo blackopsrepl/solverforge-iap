@@ -12,10 +12,10 @@ name = "solverforge_iap"
 path = "src/main.rs"
 
 [dependencies]
-solverforge = { version = "0.23.0", features = ["serde", "console", "verbose-logging"] }
-solverforge-scoring = "0.23.0"
+solverforge = { version = "0.31.2", features = ["serde", "console", "verbose-logging"] }
+solverforge-scoring = "0.31.2"
 
-solverforge-ui = "0.9.0"
+solverforge-ui = "0.9.1"
 
 # HTTP API server
 axum = "0.8.9"

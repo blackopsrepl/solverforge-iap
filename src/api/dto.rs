@@ -46,7 +46,8 @@ impl schemars::JsonSchema for PlanDto {
 #[serde(rename_all = "camelCase")]
 pub struct ConstraintAnalysisDto {
     pub name: String,
-    pub weight: String,
+    pub weight_multiplier: u32,
+    pub is_hard: bool,
     pub score: String,
     pub match_count: usize,
 }
@@ -261,6 +262,15 @@ impl JobAnalysisDto {
 }
 
 pub fn analysis_response(analysis: &solverforge::ScoreAnalysis<HardSoftScore>) -> AnalyzeResponse {
+    use solverforge::ConstraintSet;
+    // Solver analysis carries no level; the model's constraint metadata does.
+    let constraints = crate::constraints::create_constraints();
+    let metadata = constraints.constraint_metadata_entries();
+    let is_hard = |name: &str| {
+        metadata
+            .iter()
+            .any(|entry| entry.is_hard && entry.name() == name)
+    };
     AnalyzeResponse {
         score: analysis.score.to_string(),
         constraints: analysis
@@ -268,7 +278,8 @@ pub fn analysis_response(analysis: &solverforge::ScoreAnalysis<HardSoftScore>) -
             .iter()
             .map(|constraint| ConstraintAnalysisDto {
                 name: constraint.name.clone(),
-                weight: constraint.weight.to_string(),
+                weight_multiplier: constraint.weight_multiplier,
+                is_hard: is_hard(&constraint.name),
                 score: constraint.score.to_string(),
                 match_count: constraint.match_count,
             })
@@ -326,6 +337,27 @@ mod tests {
 
     fn input() -> PlanDto {
         PlanDto::from_plan(&crate::data::instances::load("Input_UG1").unwrap())
+    }
+
+    #[test]
+    fn analysis_reports_each_rule_level_from_the_model() {
+        use solverforge::Analyzable;
+        let response = analysis_response(&input().to_domain().unwrap().analyze());
+        let mut levels: Vec<_> = response
+            .constraints
+            .iter()
+            .map(|rule| (rule.name.as_str(), rule.is_hard))
+            .collect();
+        levels.sort();
+        assert_eq!(
+            levels,
+            [
+                ("availability", true),
+                ("contacts", false),
+                ("slot_conflict", true),
+                ("workload_bounds", true),
+            ]
+        );
     }
 
     #[test]

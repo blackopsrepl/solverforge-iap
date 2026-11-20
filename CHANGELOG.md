@@ -1,6 +1,23 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [0.3.0](https://github.com/blackopsrepl/solverforge-iap/compare/v0.2.0...v0.3.0) (2026-11-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** constraint analysis entries replace `weight` with `weightMultiplier` and `isHard`, and selector telemetry no longer carries the six `conflictRepair*` counters, which the runtime removed.
+
+### Features
+
+* **api:** port to solverforge 0.31.2 ([83dd898](https://github.com/blackopsrepl/solverforge-iap/commit/83dd8983af3d8cd28d32b13d51452fb74a6cba0b))
+
+
+### Bug Fixes
+
+* **constraints:** declare slot_conflict a hard rule ([4eedb7e](https://github.com/blackopsrepl/solverforge-iap/commit/4eedb7e9193fa6f3f28589b015448111a3f4b6aa))
+
 
 ## [0.2.0](https://github.com/blackopsrepl/solverforge-iap/compare/v0.1.1...v0.2.0) (2026-10-27)
 

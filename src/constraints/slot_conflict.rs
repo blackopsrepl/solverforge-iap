@@ -10,7 +10,7 @@ pub fn constraint() -> impl IncrementalConstraint<Plan, HardSoftScore> {
         .for_each(Plan::seats())
         .filter(is_assigned)
         .group_by(invigilator_slot, count())
-        .penalize(excess_assignments)
+        .penalize(hard_weight(excess_assignments))
         .named("slot_conflict")
 }
 

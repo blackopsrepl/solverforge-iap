@@ -1,7 +1,8 @@
 //! Independent score oracles; no stream keys or weight helpers are reused.
 use super::*;
-use crate::domain::{Exam, Invigilator, Seat};
+use crate::domain::{Exam, Invigilator, Plan, Seat};
 use crate::solver::variant::Variant;
+use solverforge::prelude::*;
 use solverforge::IncrementalConstraint;
 use std::collections::BTreeSet;
 

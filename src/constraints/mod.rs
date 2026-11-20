@@ -1,12 +1,6 @@
-/* Constraint definitions.
-
-Add constraint modules with `solverforge generate constraint ...`.
-The neutral shell starts with an empty constraint set. */
-
-use crate::domain::Plan;
-use solverforge::prelude::*;
-
-pub use self::assemble::create_constraints;
+//! Constraint definitions.
+//!
+//! Add constraint modules with `solverforge generate constraint ...`.
 
 #[cfg(test)]
 mod audit_tests;
@@ -18,17 +12,6 @@ mod slot_conflict;
 mod workload_bounds;
 // @solverforge:end constraint-modules
 
-mod assemble {
-    use super::*;
+mod assemble;
 
-    pub fn create_constraints() -> impl ConstraintSet<Plan, HardSoftScore> {
-        // @solverforge:begin constraint-calls
-        (
-            availability::constraint(),
-            contacts::constraint(),
-            slot_conflict::constraint(),
-            workload_bounds::constraint(),
-        )
-        // @solverforge:end constraint-calls
-    }
-}
+pub use assemble::create_constraints;

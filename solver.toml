@@ -8,6 +8,11 @@ random_seed = 1
 # with `move_threads` (1-32) in its payload.
 move_thread_count = { count = 1 }
 
+# Both local-search phases use a one-step late-acceptance history. Across
+# the 17 instances x 2 objectives at 30 s it beats size 400 and a
+# 400-then-1 split, and sizes 10, 50 and 100 lose on a six-instance probe:
+# longer histories keep accepting worse plans for too long at these budgets.
+
 [termination]
 seconds_spent_limit = 60
 
@@ -24,7 +29,7 @@ type = "local_search"
 best_score_limit = "0hard/-1000000000soft"
 [phases.acceptor]
 type = "late_acceptance"
-late_acceptance_size = 400
+late_acceptance_size = 1
 [phases.forager]
 type = "accepted_count"
 limit = 1
@@ -51,7 +56,7 @@ recreate_heuristic_type = "cheapest_insertion"
 type = "local_search"
 [phases.acceptor]
 type = "late_acceptance"
-late_acceptance_size = 400
+late_acceptance_size = 1
 [phases.forager]
 type = "accepted_count"
 limit = 1
